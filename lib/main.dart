@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  final String title;
 
 
 
@@ -52,45 +51,84 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget divider = const Divider(color: Colors.grey);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            IconButton(onPressed: () {
-              if (kDebugMode) {
-                print("点击展示个人信息");
+      appBar: buildAppBar(),
+      body: buildBody(divider),
+      bottomNavigationBar: const MyBottomNavigationBar(),
+    );
+  }
+
+  /**
+   * build body
+   */
+  Column buildBody(Widget divider) {
+    return
+      Column(
+        children: [
+          buildBanners(),
+          buildArticlesWidget()
+        ],
+      );
+  }
+
+  RefreshIndicator buildArticlesWidget() {
+    final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+    GlobalKey<RefreshIndicatorState>();
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      color: Colors.white,
+      backgroundColor: Colors.blue,
+      strokeWidth: 4.0,
+      onRefresh: () async {
+        print('刷新');
+      },
+          child:FutureBuilder(
+            future:_requestBody(0),
+            builder:(BuildContext context,AsyncSnapshot snapshot){
+              print('网络请求状态${snapshot.connectionState}');
+              print('网络请求状态${snapshot.data}');
+              if (snapshot.connectionState == ConnectionState.done) {
+
+
               }
-            }, icon: const Icon(Icons.person)),
-            const SizedBox(width: 30),
-            const Text("wanAndroidApp"),
-            Column()
-          ],
-        ),
-        actions: [
+              return ListView.separated("网络");
+            },
+          )
+    );
+
+  }
+
+  /**
+   * Performing multiple concurrent requests by future
+   */
+  Future _requestBody(int index) async{
+    return Future.wait([HttpClient.get(HttpQueryParams.HotArticle, null),
+      HttpClient.get('/article/list/$index/json', null)]);
+  }
+
+  /**
+   * build appbar
+   */
+  AppBar buildAppBar() {
+    return AppBar(
+      title: Row(
+        children: [
           IconButton(onPressed: () {
             if (kDebugMode) {
-              print("搜索");
+              print("点击展示个人信息");
             }
-          }, icon: const Icon(Icons.search))
+          }, icon: const Icon(Icons.person)),
+          const SizedBox(width: 30),
+          const Text("wanAndroidApp"),
+          Column()
         ],
       ),
-      body: Column(
-          children: [
-            buildBanners(),
-            Expanded(child: ListView.separated(
-              itemCount: 100,
-              //列表项构造器
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(title: Text("$index"));
-              },
-              //分割器构造器
-              separatorBuilder: (BuildContext context, int index) {
-                return divider;
-              },
-            ))
-
-          ]
-      ),
-      bottomNavigationBar: const MyBottomNavigationBar(),
+      actions: [
+        IconButton(onPressed: () {
+          if (kDebugMode) {
+            print("搜索");
+          }
+        }, icon: const Icon(Icons.search))
+      ],
     );
   }
 
