@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'home/bean/BannersBean.dart';
+import 'home/http/http_qeury_params.dart';
 import 'https/http_client.dart';
 
 void main() {
@@ -100,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       alignment: Alignment.center,
       child: FutureBuilder(
-      future: HttpClient.get("/banner/json", null),
+      future: HttpClient.get(HttpQueryParams.bannerQuery, null),
       builder: (BuildContext context, AsyncSnapshot snapshot){
           //请求完成
         if (snapshot.connectionState == ConnectionState.done) {
