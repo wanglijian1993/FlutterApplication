@@ -1,9 +1,5 @@
-
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 
-import '../home/bean/BannersBean.dart';
 
 class HttpClient{
   ///超时时间
