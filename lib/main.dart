@@ -69,6 +69,14 @@ class _HomeArticesPage extends State<HomeArticesPage> {
     Widget divider = const Divider(color: Colors.grey);
 
     return Scaffold(
+      appBar: PreferredSize(
+        child: AppBar(
+          title: Text("标题"),
+        ),
+        preferredSize: Size(
+            _selectedIndex == 0 ? 0 : MediaQuery.of(context).size.width,
+            _selectedIndex == 0 ? 0 : AppBar().preferredSize.height),
+      ),
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,

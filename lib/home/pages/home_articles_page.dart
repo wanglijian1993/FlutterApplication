@@ -15,7 +15,6 @@ CustomScrollView buildCustomScrollView() {
     slivers: [
       SliverAppBar(
         expandedHeight: 250,
-        title: Text("wanAndroid"),
         pinned: true,
         flexibleSpace: buildBanners(),
       ),
