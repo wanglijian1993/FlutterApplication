@@ -1,20 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'Squares.g.dart';
+part 'OfficialAccountArticlesBean.g.dart';
 
 @JsonSerializable()
-class Squares {
+class OfficialAccountArticlesBean {
   DataBean data;
   num errorCode;
   String errorMsg;
 
-  Squares(
+  OfficialAccountArticlesBean(
       {required this.data, required this.errorCode, required this.errorMsg});
 
-  factory Squares.fromJson(Map<String, dynamic> json) =>
-      _$SquaresFromJson(json);
+  factory OfficialAccountArticlesBean.fromJson(Map<String, dynamic> json) =>
+      _$OfficialAccountArticlesBeanFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SquaresToJson(this);
+  Map<String, dynamic> toJson() => _$OfficialAccountArticlesBeanToJson(this);
 }
 
 @JsonSerializable()
@@ -71,7 +71,7 @@ class DatasBean {
   String shareUser;
   num superChapterId;
   String superChapterName;
-  dynamic tags;
+  List<TagsBean> tags;
   String title;
   num type;
   num userId;
@@ -106,7 +106,7 @@ class DatasBean {
       required this.shareUser,
       required this.superChapterId,
       required this.superChapterName,
-      this.tags,
+      required this.tags,
       required this.title,
       required this.type,
       required this.userId,
@@ -119,3 +119,15 @@ class DatasBean {
   Map<String, dynamic> toJson() => _$DatasBeanToJson(this);
 }
 
+@JsonSerializable()
+class TagsBean {
+  String name;
+  String url;
+
+  TagsBean({required this.name, required this.url});
+
+  factory TagsBean.fromJson(Map<String, dynamic> json) =>
+      _$TagsBeanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TagsBeanToJson(this);
+}

@@ -5,10 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
+import '../../https/http_qeury_params.dart';
 import '../bean/BannersBean.dart';
 import '../bean/HomeArticles.dart';
 import '../bean/HomeHotArticles.dart';
-import '../http/http_qeury_params.dart';
 
 CustomScrollView buildCustomScrollView() {
   return CustomScrollView(
