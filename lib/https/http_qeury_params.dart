@@ -9,3 +9,8 @@ class HttpQueryParams {
 class AffAccountHttp {
   static const String OfficialAccount = '/wxarticle/chapters/json';
 }
+
+class SystemHttp {
+  static const String system = '/tree/json';
+  static const String navi = '/navi/json';
+}

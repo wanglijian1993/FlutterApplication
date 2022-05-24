@@ -57,47 +57,50 @@ class _OfficialAccountPageState extends State<OfficialAccountPage>
                     future:
                         HttpClient.get('/wxarticle/list/${e.id}/0/json', null),
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      Response response = snapshot.data;
-                      OfficialAccountArticlesBean offAccountArticles =
-                          OfficialAccountArticlesBean.fromJson(response.data);
-                      return ListView.separated(
-                        itemBuilder: (BuildContext context, int index) {
-                          var offAccountArticle =
-                              offAccountArticles.data.datas[index];
-                          return Column(
-                            children: [
-                              Text(offAccountArticle.title),
-                              SizedBox(height: 5),
-                              Stack(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Text('作者:${offAccountArticle.title}'),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                          '发布时间:${offAccountArticle.shareDate}')
-                                    ],
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Icon(
-                                      CupertinoIcons.heart_solid,
-                                      size: 40,
-                                      color: Colors.red,
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        Response response = snapshot.data;
+                        OfficialAccountArticlesBean offAccountArticles =
+                            OfficialAccountArticlesBean.fromJson(response.data);
+                        return ListView.separated(
+                          itemBuilder: (BuildContext context, int index) {
+                            var offAccountArticle =
+                                offAccountArticles.data.datas[index];
+                            return Column(
+                              children: [
+                                Text(offAccountArticle.title),
+                                SizedBox(height: 5),
+                                Stack(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text('作者:${offAccountArticle.title}'),
+                                        SizedBox(
+                                          height: 3,
+                                        ),
+                                        Text(
+                                            '发布时间:${offAccountArticle.shareDate}')
+                                      ],
                                     ),
-                                  )
-                                ],
-                              )
-                            ],
-                          );
-                        },
-                        itemCount: offAccountArticles.data.datas.length,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return divider;
-                        },
-                      );
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Icon(
+                                        CupertinoIcons.heart_solid,
+                                        size: 40,
+                                        color: Colors.red,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            );
+                          },
+                          itemCount: offAccountArticles.data.datas.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return divider;
+                          },
+                        );
+                      }
+                      return Text('');
                     },
                   );
                 }).toList()),
