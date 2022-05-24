@@ -85,16 +85,14 @@ class _HomeArticesPage extends State<HomeArticesPage> {
         showUnselectedLabels: true,
         onTap: _onItemTapped,
         items: const [
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: '首页'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.icecream_outlined), label: '首页'),
+              icon: Icon(CupertinoIcons.square), label: '广场'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_ic_call_outlined), label: '广场'),
+              icon: Icon(CupertinoIcons.chat_bubble_2_fill), label: '公众号'),
+          BottomNavigationBarItem(icon: Icon(CupertinoIcons.tree), label: '体系'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.icecream_outlined), label: '公众号'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.icecream_outlined), label: '体系'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.icecream_outlined), label: '项目'),
+              icon: Icon(CupertinoIcons.color_filter), label: '项目'),
         ],
       ),
     );
