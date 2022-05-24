@@ -14,3 +14,7 @@ class SystemHttp {
   static const String system = '/tree/json';
   static const String navi = '/navi/json';
 }
+
+class ProjectHttp {
+  static const String projectTree = '/project/tree/json';
+}
