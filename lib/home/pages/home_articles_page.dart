@@ -6,16 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../widgets/MyTitle.dart';
 import '../bean/BannersBean.dart';
 import '../bean/HomeArticles.dart';
 import '../bean/HomeHotArticles.dart';
 
+/**
+ * 首页
+ */
 CustomScrollView buildCustomScrollView() {
   return CustomScrollView(
     slivers: [
       SliverAppBar(
         expandedHeight: 250,
         pinned: true,
+        title: buildAppBar('wanAndroid'),
         flexibleSpace: buildBanners(),
       ),
       HomeArticlesWidget(0),
@@ -30,7 +35,6 @@ CustomScrollView buildCustomScrollView() {
  */
 FlexibleSpaceBar buildBanners() {
   return FlexibleSpaceBar(
-    title: const Text("wanAndroid"),
     background: FutureBuilder(
       future: HttpClient.get(HttpQueryParams.bannerQuery, null),
       builder: (BuildContext context, AsyncSnapshot snapshot) {

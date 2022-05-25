@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_appliciation/project/pages/project_page.dart';
 import 'package:my_appliciation/square/pages/square_page.dart';
 import 'package:my_appliciation/system/pages/system_page.dart';
+import 'package:my_appliciation/widgets/MyTitle.dart';
 
 import 'home/pages/home_articles_page.dart';
 import 'official_accounts/pages/official_account_page.dart';
@@ -70,9 +71,7 @@ class _HomeArticesPage extends State<HomeArticesPage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        child: AppBar(
-          title: Text("标题"),
-        ),
+        child: buildAppBar("wanAndroid"),
         preferredSize: Size(
             _selectedIndex == 0 ? 0 : MediaQuery.of(context).size.width,
             _selectedIndex == 0 ? 0 : AppBar().preferredSize.height),
