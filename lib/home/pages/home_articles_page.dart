@@ -84,6 +84,10 @@ class HomeArticlesWidget extends StatefulWidget {
  * home articles
  */
 class _HomeArticlesWidget extends State<HomeArticlesWidget> {
+  var divider = Divider(
+    color: Colors.grey.shade300,
+  );
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -106,82 +110,80 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
           }
           return SliverList(
               delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              var article;
+                    (BuildContext context, int index) {
+                  var article;
               if (widget.mType == 0) {
                 article = getHotHomeArticles(articles).data[index];
               } else {
                 article = getArticles(articles).data.datas[index];
               }
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      article.title,
-                      style: TextStyle(color: Colors.black, fontSize: 17),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            child: Text(
-                              "热",
-                              style: TextStyle(color: Colors.red, fontSize: 12),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                  width: 1.0, color: Colors.red),
-                            ),
-                          ),
-                          width: 30,
-                          height: 18,
+                        Text.rich(TextSpan(children: [
+                          TextSpan(
+                              text: widget.mType == 0 ? "HOT" : "TOP",
+                              style:
+                                  TextStyle(color: Colors.red, fontSize: 12)),
+                          TextSpan(
+                            text: '  ${article.title}',
+                            style: TextStyle(color: Colors.black, fontSize: 17),
+                          )
+                        ])),
+                        SizedBox(
+                          height: 8,
                         ),
-                        SizedBox(width: 5),
                         Text(
                           "作者:${article.author}",
+                          maxLines: 2,
                           style: TextStyle(color: Colors.black, fontSize: 15),
                         ),
-                        SizedBox(width: 3),
+                        SizedBox(
+                          height: 6,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                article.niceShareDate,
+                                style:
+                                    TextStyle(fontSize: 15, color: Colors.grey),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(
+                                  CupertinoIcons.heart_solid,
+                                  size: 20,
+                                  color: Colors.red,
+                                ),
+                              )
+                            ]),
                       ],
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            article.niceShareDate,
-                            style: TextStyle(fontSize: 15, color: Colors.grey),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              CupertinoIcons.heart_solid,
-                              size: 20,
-                              color: Colors.red,
-                            ),
-                          )
-                        ])
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 0.5,
+                    child: divider,
+                  )
+                ],
               );
-            },
-            childCount: length,
-          ));
+                },
+                childCount: length,
+              ));
         }
         return SliverList(
             delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            return Text('');
-          },
-          childCount: 0,
-        ));
+                  (BuildContext context, int index) {
+                return Text('');
+              },
+              childCount: 0,
+            ));
         ;
       },
     );
