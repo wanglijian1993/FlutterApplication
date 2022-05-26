@@ -8,9 +8,10 @@ import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
 import '../../widgets/MyTitle.dart';
+import '../bean/BannersBean.dart' as Banner;
 import '../bean/BannersBean.dart';
 import '../bean/HomeArticles.dart';
-import '../bean/HomeHotArticles.dart';
+import '../bean/HomeHotArticles.dart' as Articles;
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               title: MyAppBar('wanAndroid', 0),
               floating: true,
               snap: true,
-              flexibleSpace: buildBanners(),
+              flexibleSpace: MyBanner(),
             ),
             HomeArticlesWidget(0),
             HomeArticlesWidget(1),
@@ -58,62 +59,65 @@ class _HomeWidgetState extends State<HomeWidget> {
         enableControlFinishLoad: true,
         enableControlFinishRefresh: true,
         onRefresh: () async {
-          await Future.delayed(const Duration(seconds: 2));
           _controller.finishRefresh();
         },
         onLoad: () async {
-          await Future.delayed(const Duration(seconds: 2));
-
           _controller.finishLoad();
         });
-    ;
   }
 }
 
-/**
- * banners
- */
-FlexibleSpaceBar buildBanners() {
-  return FlexibleSpaceBar(
-    background: FutureBuilder(
-      future: HttpClient.get(HttpQueryParams.bannerQuery, null),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        //请求完成
-        if (snapshot.connectionState == ConnectionState.done) {
-          Response response = snapshot.data;
-          //发生错误
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          var banners = BannersBean.fromJson(response.data);
-          //请求成功，通过项目信息构建用于显示项目名称的ListView
-          return SizedBox(
-              height: 230,
-              child: Swiper(
-                  itemBuilder: (BuildContext context, int index) {
-                    return Image.network(banners.data[index].imagePath,
-                        fit: BoxFit.fill);
-                  },
-                  itemCount: banners.data.length,
-                  loop: true,
-                  autoplay: true,
-                  duration: 300));
-          ;
-        }
-        //请求未完成时弹出loading
-        return const CircularProgressIndicator();
-      },
-    ),
-  );
+class MyBanner extends StatefulWidget {
+  const MyBanner({Key? key}) : super(key: key);
+
+  @override
+  State<MyBanner> createState() => _MyBannerState();
+}
+
+class _MyBannerState extends State<MyBanner> {
+  late List<Banner.DataBean> mBanners = [];
+
+  @override
+  void initState() {
+    super.initState();
+    reqeustBanners();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlexibleSpaceBar(
+      background: SizedBox(
+          height: 230,
+          child: Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return Image.network(mBanners[index].imagePath,
+                    fit: BoxFit.fill);
+              },
+              itemCount: mBanners.length,
+              loop: true,
+              autoplay: true,
+              duration: 300)),
+    );
+  }
+
+  void reqeustBanners() async {
+    try {
+      Response response =
+          await HttpClient.get(HttpQueryParams.bannerQuery, null);
+      var banners = BannersBean.fromJson(response.data);
+      if (banners.errorCode == 0) {
+        mBanners.addAll(banners.data);
+        setState(() {});
+      }
+    } on DioError catch (e) {}
+  }
 }
 
 class HomeArticlesWidget extends StatefulWidget {
   late int mType;
-  int mIndex = 0;
 
-  HomeArticlesWidget(int type, {Key? key, int index = 0}) : super(key: key) {
+  HomeArticlesWidget(int type, {Key? key}) : super(key: key) {
     mType = type;
-    mIndex = index;
   }
 
   @override
@@ -124,113 +128,107 @@ class HomeArticlesWidget extends StatefulWidget {
  * home articles
  */
 class _HomeArticlesWidget extends State<HomeArticlesWidget> {
+  //下标
+  int index = 0;
+  List<Articles.DataBean> articles = [];
+
   var divider = Divider(
     color: Colors.grey.shade300,
   );
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: widget.mType == 0
-          ? HttpClient.get(HttpQueryParams.HotArticle, null)
-          : HttpClient.get('/article/list/${widget.mIndex}/json', null),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          Response response = snapshot.data;
-          Object articles;
-          int length;
-          if (widget.mType == 0) {
-            var homeHotArticles = HomeHotArticles.fromJson(response.data);
-            length = homeHotArticles.data.length;
-            articles = homeHotArticles;
-          } else {
-            var homeArticles = HomeArticles.fromJson(response.data);
-            length = homeArticles.data.datas.length;
-            articles = homeArticles;
-          }
-          return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  var article;
-              if (widget.mType == 0) {
-                article = getHotHomeArticles(articles).data[index];
-              } else {
-                article = getArticles(articles).data.datas[index];
-              }
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text.rich(TextSpan(children: [
-                          TextSpan(
-                              text: widget.mType == 0 ? "HOT" : "TOP",
-                              style:
-                                  TextStyle(color: Colors.red, fontSize: 12)),
-                          TextSpan(
-                            text: '  ${article.title}',
-                            style: TextStyle(color: Colors.black, fontSize: 17),
-                          )
-                        ])),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          "作者:${article.author}",
-                          maxLines: 2,
-                          style: TextStyle(color: Colors.black, fontSize: 15),
-                        ),
-                        SizedBox(
-                          height: 6,
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                article.niceShareDate,
-                                style:
-                                    TextStyle(fontSize: 15, color: Colors.grey),
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Icon(
-                                  CupertinoIcons.heart_solid,
-                                  size: 20,
-                                  color: Colors.red,
-                                ),
-                              )
-                            ]),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 0.5,
-                    child: divider,
-                  )
-                ],
-              );
-                },
-                childCount: length,
-              ));
-        }
-        return SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                return Text('');
-              },
-              childCount: 0,
-            ));
-        ;
-      },
-    );
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('_HomeArticlesWidget init');
+    reqeustTopArticle(widget.mType);
   }
 
-  HomeHotArticles getHotHomeArticles(Object articles) =>
-      articles as HomeHotArticles;
+  /**
+   * 请求首页文章
+   */
+  void reqeustTopArticle(int type) async {
+    if (type == 0) {
+      Response articles =
+          await HttpClient.get(HttpQueryParams.HotArticle, null);
+      var homeHotArticles = Articles.HomeHotArticles.fromJson(articles.data);
+      if (homeHotArticles.errorCode == 0) {
+        this.articles.addAll(homeHotArticles.data);
+        setState(() {});
+      }
+    } else if (type == 1) {
+      Response articles =
+          await HttpClient.get('/article/list/${index}/json', null);
+      var homeArticles = HomeArticles.fromJson(articles.data);
+      if (homeArticles.errorCode == 0) {
+        this.articles.addAll(homeArticles.data.datas);
+        setState(() {});
+      }
+    }
+  }
 
-  HomeArticles getArticles(Object articles) => articles as HomeArticles;
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+      (BuildContext context, int index) {
+        var article = articles[index];
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(TextSpan(children: [
+                    TextSpan(
+                        text: widget.mType == 0 ? "HOT" : "TOP",
+                        style: TextStyle(color: Colors.red, fontSize: 12)),
+                    TextSpan(
+                      text: '  ${article.title}',
+                      style: TextStyle(color: Colors.black, fontSize: 17),
+                    )
+                  ])),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    "作者:${article.author}",
+                    maxLines: 2,
+                    style: TextStyle(color: Colors.black, fontSize: 15),
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          article.niceShareDate,
+                          style: TextStyle(fontSize: 15, color: Colors.grey),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(
+                            CupertinoIcons.heart_solid,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                        )
+                      ]),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 0.5,
+              child: divider,
+            )
+          ],
+        );
+      },
+      childCount: articles.length,
+    ));
+  }
 }
