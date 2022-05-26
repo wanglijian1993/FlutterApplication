@@ -24,7 +24,11 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        appBar: buildAppBar("title"),
+        appBar: PreferredSize(
+          preferredSize: Size(
+              MediaQuery.of(context).size.width, AppBar().preferredSize.height),
+          child: MyAppBar("wanAndroid", 0),
+        ),
         body: CustomScrollView(
           //为了能使CustomScrollView拉到顶部时还能继续往下拉，必须让 physics 支持弹性效果
           physics: const BouncingScrollPhysics(

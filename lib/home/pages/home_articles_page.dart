@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
@@ -11,23 +12,62 @@ import '../bean/BannersBean.dart';
 import '../bean/HomeArticles.dart';
 import '../bean/HomeHotArticles.dart';
 
-/**
- * 首页
- */
-CustomScrollView buildCustomScrollView() {
-  return CustomScrollView(
-    slivers: [
-      SliverAppBar(
-        expandedHeight: 250,
-        pinned: true,
-        title: buildAppBar('wanAndroid'),
-        flexibleSpace: buildBanners(),
-      ),
-      HomeArticlesWidget(0),
-      HomeArticlesWidget(1),
-      // HomeArticlesWidget(1,index: 0,),
-    ],
-  );
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({Key? key}) : super(key: key);
+
+  @override
+  State<HomeWidget> createState() => _HomeWidgetState();
+}
+
+class _HomeWidgetState extends State<HomeWidget> {
+  late EasyRefreshController _controller;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = EasyRefreshController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return EasyRefresh(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 250,
+              pinned: true,
+              title: MyAppBar('wanAndroid', 0),
+              floating: true,
+              snap: true,
+              flexibleSpace: buildBanners(),
+            ),
+            HomeArticlesWidget(0),
+            HomeArticlesWidget(1),
+          ],
+        ),
+        controller: _controller,
+        header: MaterialHeader(),
+        enableControlFinishLoad: true,
+        enableControlFinishRefresh: true,
+        onRefresh: () async {
+          await Future.delayed(const Duration(seconds: 2));
+          _controller.finishRefresh();
+        },
+        onLoad: () async {
+          await Future.delayed(const Duration(seconds: 2));
+
+          _controller.finishLoad();
+        });
+    ;
+  }
 }
 
 /**

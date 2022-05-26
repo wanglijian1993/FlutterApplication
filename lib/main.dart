@@ -35,7 +35,8 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeArticesPage extends StatefulWidget {
-  const HomeArticesPage({Key? key}) : super(key: key);
+  HomeArticesPage({Key? key}) : super(key: key);
+  var titles = ['首页', '广场', '公众号', '体系', '项目'];
 
   @override
   State<HomeArticesPage> createState() => _HomeArticesPage();
@@ -43,7 +44,7 @@ class HomeArticesPage extends StatefulWidget {
 
 class _HomeArticesPage extends State<HomeArticesPage> {
   var pages = [
-    buildCustomScrollView(),
+    HomeWidget(),
     SquarePage(),
     OfficialAccountPage(),
     SystemPage(),
@@ -67,14 +68,13 @@ class _HomeArticesPage extends State<HomeArticesPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget divider = const Divider(color: Colors.grey);
-
+    print('index:$_selectedIndex');
     return Scaffold(
       appBar: PreferredSize(
-        child: buildAppBar("wanAndroid"),
         preferredSize: Size(
             _selectedIndex == 0 ? 0 : MediaQuery.of(context).size.width,
             _selectedIndex == 0 ? 0 : AppBar().preferredSize.height),
+        child: MyAppBar("wanAndroid", _selectedIndex, titles: widget.titles),
       ),
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -83,15 +83,18 @@ class _HomeArticesPage extends State<HomeArticesPage> {
         currentIndex: _selectedIndex,
         showUnselectedLabels: true,
         onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: '首页'),
+        items: [
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.square), label: '广场'),
+              icon: Icon(CupertinoIcons.home), label: widget.titles[0]),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.chat_bubble_2_fill), label: '公众号'),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.tree), label: '体系'),
+              icon: Icon(CupertinoIcons.square), label: widget.titles[1]),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.color_filter), label: '项目'),
+              icon: Icon(CupertinoIcons.chat_bubble_2_fill),
+              label: widget.titles[2]),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.tree), label: widget.titles[3]),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.color_filter), label: widget.titles[4]),
         ],
       ),
     );
