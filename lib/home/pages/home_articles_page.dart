@@ -7,6 +7,7 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../widgets/MyDividers.dart';
 import '../../widgets/MyTitle.dart';
 import '../bean/BannersBean.dart' as Banner;
 import '../bean/BannersBean.dart';
@@ -21,7 +22,7 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  late EasyRefreshController _controller;
+  late final EasyRefreshController _controller = EasyRefreshController();
 
   //下标
   int index = 0;
@@ -39,7 +40,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = EasyRefreshController();
     reqeustHomeDatas();
   }
 
@@ -51,31 +51,30 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return EasyRefresh(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 250,
-              pinned: true,
-              title: MyAppBar('wanAndroid', 0),
-              floating: true,
-              flexibleSpace: MyBanner(mBanners),
-            ),
-            HomeArticlesWidget(topArticles, 0),
-            HomeArticlesWidget(hotArticles, 1),
-          ],
-        ),
-        controller: _controller,
+    return EasyRefresh.custom(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250,
+            pinned: true,
+            title: MyAppBar('wanAndroid', 0),
+            floating: true,
+            flexibleSpace: MyBanner(mBanners),
+          ),
+          HomeArticlesWidget(topArticles, 0),
+          HomeArticlesWidget(hotArticles, 1),
+        ],
         header: MaterialHeader(),
+        controller: _controller,
         enableControlFinishLoad: true,
         enableControlFinishRefresh: true,
         onRefresh: () async {
-          print('onRefresh');
+          index = 0;
+          topArticles.clear();
+          hotArticles.clear();
           reqeustHomeDatas();
-          _controller.finishRefresh();
         },
         onLoad: () async {
-          _controller.finishLoad();
+          reqeustArticle();
         });
   }
 
@@ -85,8 +84,6 @@ class _HomeWidgetState extends State<HomeWidget> {
       HttpClient.get('/article/list/${index}/json', null),
       HttpClient.get(HttpQueryParams.bannerQuery, null)
     ]).then((value) {
-      print(
-          'reqeustHomeDatas future-wait0:${value[0]},1:${value[1]},2:${value[2]}');
       var homeHotArticles = Articles.HomeHotArticles.fromJson(value[0].data);
       if (homeHotArticles.errorCode == 0) {
         topArticles.addAll(homeHotArticles.data);
@@ -97,12 +94,12 @@ class _HomeWidgetState extends State<HomeWidget> {
       }
       var banners = BannersBean.fromJson(value[2].data);
       if (banners.errorCode == 0) {
+        mBanners.clear();
         mBanners.addAll(banners.data);
       }
-      print('value:${value.length}');
-      print(
-          'topArticles:${topArticles.length},hotArticles:${hotArticles.length},banner${mBanners.length}');
-      setState(() {});
+      setState(() {
+        _controller.finishRefresh(success: true);
+      });
     }).catchError((e) {
       print('error:${e}');
     });
@@ -111,45 +108,24 @@ class _HomeWidgetState extends State<HomeWidget> {
   /**
    * 请求首页文章
    */
-  Future reqeustArticle(int type) async {
-    print('reqeustTopArticle');
-    if (type == 0) {
-      Response articles =
-          await HttpClient.get(HttpQueryParams.HotArticle, null);
-      print('data:${articles.data}');
-      var homeHotArticles = Articles.HomeHotArticles.fromJson(articles.data);
-      if (homeHotArticles.errorCode == 0) {
-        topArticles.addAll(homeHotArticles.data);
-      }
-    } else if (type == 1) {
-      Response articles =
-          await HttpClient.get('/article/list/${index}/json', null);
-      var homeArticles = HomeArticles.fromJson(articles.data);
-      if (homeArticles.errorCode == 0) {
-        hotArticles.addAll(homeArticles.data.datas);
-      }
+  Future reqeustArticle() async {
+    index++;
+    Response articles =
+        await HttpClient.get('/article/list/${index}/json', null);
+    var homeArticles = HomeArticles.fromJson(articles.data);
+    if (homeArticles.errorCode == 0) {
+      hotArticles.addAll(homeArticles.data.datas);
     }
-    print('reqeustArticle 完成');
-  }
-
-  Future reqeustBanners() async {
-    print('reqeustBanners');
-    try {
-      Response response =
-          await HttpClient.get(HttpQueryParams.bannerQuery, null);
-      var banners = BannersBean.fromJson(response.data);
-      if (banners.errorCode == 0) {
-        mBanners.addAll(banners.data);
-      }
-      print('reqeustBanners 完成');
-    } on DioError catch (e) {}
+    setState(() {
+      _controller.finishLoad(success: true);
+    });
   }
 }
 
 class MyBanner extends StatefulWidget {
-  late List<Banner.DataBean> mBanners = [];
+  List<Banner.DataBean> mBanners;
 
-  MyBanner(@required this.mBanners, {Key? key}) : super(key: key);
+  MyBanner(this.mBanners, {Key? key}) : super(key: key);
 
   @override
   State<MyBanner> createState() => _MyBannerState();
@@ -160,12 +136,10 @@ class _MyBannerState extends State<MyBanner> {
   @override
   void initState() {
     super.initState();
-    print('_MyBannerState initState init');
   }
 
   @override
   Widget build(BuildContext context) {
-    print('_MyBannerState build');
     return FlexibleSpaceBar(
       background: SizedBox(
           height: 230,
@@ -199,20 +173,16 @@ class HomeArticlesWidget extends StatefulWidget {
  * home articles
  */
 class _HomeArticlesWidget extends State<HomeArticlesWidget> {
-  var divider = Divider(
-    color: Colors.grey.shade300,
-  );
+  var divider = getGreyDivider();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('_HomeArticlesWidget init');
   }
 
   @override
   Widget build(BuildContext context) {
-    print('_HomeArticlesWidget build');
     return SliverList(
         delegate: SliverChildBuilderDelegate(
       (BuildContext context, int index) {
@@ -238,10 +208,10 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
                         height: 8,
                       ),
                       Text(
-                        "作者:${article.author}",
-                        maxLines: 2,
-                        style: TextStyle(color: Colors.black, fontSize: 15),
-                      ),
+                        "作者:${article.author.length > 0 ? article.author : article.shareUser}",
+                    maxLines: 2,
+                    style: TextStyle(color: Colors.black, fontSize: 15),
+                  ),
                       SizedBox(
                         height: 6,
                       ),
