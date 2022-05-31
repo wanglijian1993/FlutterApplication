@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Divider getGreyDivider() {
+Divider buildGreyDivider() {
   return Divider(
     color: Colors.grey.shade300,
   );

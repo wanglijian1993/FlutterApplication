@@ -19,7 +19,7 @@ class SquarePage extends StatefulWidget {
 class _SquarePageState extends State<SquarePage> {
   int index = 0;
   List<DatasBean> _mySquaras = [];
-  var divider = getGreyDivider();
+  var divider = buildGreyDivider();
   late EasyRefreshController _controller;
 
   @override

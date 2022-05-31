@@ -127,14 +127,14 @@ class _MyTabBarViewState extends State<MyTabBarView> {
                         SizedBox(
                           height: 4,
                         ),
-                        Text('发布时间:${offAccountArticle.shareDate}')
+                        Text('发布时间:${offAccountArticle.niceShareDate}')
                       ],
                     ),
                     Align(
-                      alignment: Alignment.topRight,
+                      alignment: Alignment.bottomRight,
                       child: Icon(
                         CupertinoIcons.heart_solid,
-                        size: 40,
+                        size: 20,
                         color: Colors.red,
                       ),
                     )

@@ -173,7 +173,7 @@ class HomeArticlesWidget extends StatefulWidget {
  * home articles
  */
 class _HomeArticlesWidget extends State<HomeArticlesWidget> {
-  var divider = getGreyDivider();
+  var divider = buildGreyDivider();
 
   @override
   void initState() {
