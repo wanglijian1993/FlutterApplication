@@ -44,6 +44,10 @@ dependencies:
   build_runner: ^2.1.11
   #刷新库
   flutter_easyrefresh: ^2.2.1
+  #toast
+  fluttertoast: ^8.0.9
+  #存储
+  shared_preferences: ^2.0.15
 dev_dependencies:
   flutter_test:
     sdk: flutter

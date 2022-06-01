@@ -7,6 +7,7 @@ import 'package:my_appliciation/system/pages/system_page.dart';
 import 'package:my_appliciation/widgets/MyTitle.dart';
 
 import 'home/pages/home_articles_page.dart';
+import 'login/pages/Login.dart';
 import 'official_accounts/pages/official_account_page.dart';
 
 void main() {
@@ -97,10 +98,108 @@ class _HomeArticesPage extends State<HomeArticesPage> {
               icon: Icon(CupertinoIcons.color_filter), label: widget.titles[4]),
         ],
       ),
+      drawer: MyDrawer(),
     );
   }
 }
 
+class MyDrawer extends StatefulWidget {
+  const MyDrawer({Key? key}) : super(key: key);
 
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
 
+class _MyDrawerState extends State<MyDrawer> {
+  List<String> mPortViewDatas = [
+    '我的积分',
+    '我的收藏',
+    '我的分享',
+    'TODO',
+    '夜间模式',
+    '系统设置'
+  ];
+  List<IconData> mIconData = [
+    CupertinoIcons.squares_below_rectangle,
+    CupertinoIcons.heart_circle,
+    CupertinoIcons.share,
+    CupertinoIcons.today,
+    CupertinoIcons.moon_circle,
+    CupertinoIcons.settings
+  ];
 
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: GestureDetector(
+              onTap: () async {
+                Navigator.pop(context);
+                var result = await Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return LoginPage();
+                }));
+                print('result${result}');
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(child: Icon(CupertinoIcons.person)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '未登录',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('等级:--',
+                          style: TextStyle(fontSize: 16, color: Colors.white)),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text('排名:--',
+                          style: TextStyle(fontSize: 16, color: Colors.white))
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 40.0, top: 20),
+            child: ListView.separated(
+              itemBuilder: (BuildContext context, int index) {
+                return Row(
+                  children: [
+                    Icon(mIconData[index]),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Text(
+                      mPortViewDatas[index],
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    )
+                  ],
+                );
+              },
+              itemCount: mPortViewDatas.length,
+              separatorBuilder: (BuildContext context, int index) => SizedBox(
+                height: 40,
+              ),
+              shrinkWrap: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

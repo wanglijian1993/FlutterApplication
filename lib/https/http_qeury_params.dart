@@ -18,3 +18,9 @@ class SystemHttp {
 class ProjectHttp {
   static const String projectTree = '/project/tree/json';
 }
+
+class LoginAndRegisterHttp {
+  static const String login = '/user/login';
+  static const String regsiter = '/user/register';
+  static const String exitLogin = '/user/logout/json';
+}

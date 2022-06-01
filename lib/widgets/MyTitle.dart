@@ -18,21 +18,27 @@ class MyAppBar extends StatefulWidget {
 class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
+    bool isVisible = widget.selectedIndex == 0 ? false : true;
     return AppBar(
+      leading: Visibility(
+        visible: isVisible,
+        child: GestureDetector(
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: Icon(CupertinoIcons.text_justify),
+        ),
+      ),
       backgroundColor:
           widget.selectedIndex == 0 ? Colors.transparent : Colors.blue,
       centerTitle: true,
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 32.0),
-        child: Icon(CupertinoIcons.rectangle_stack_person_crop_fill),
-      ),
       title: Text(
         widget.titles == null ? '首页' : widget.titles[widget.selectedIndex],
         style: const TextStyle(color: Colors.white, fontSize: 20),
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 32.0),
+          padding: const EdgeInsets.only(right: 15.0),
           child: Icon(CupertinoIcons.search),
         )
       ],
