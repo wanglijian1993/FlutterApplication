@@ -7,7 +7,9 @@ part of 'LoginBean.dart';
 // **************************************************************************
 
 LoginBean _$LoginBeanFromJson(Map<String, dynamic> json) => LoginBean(
-      data: DataBean.fromJson(json['data'] as Map<String, dynamic>),
+      data: json['data'] == null
+          ? null
+          : DataBean.fromJson(json['data'] as Map<String, dynamic>),
       errorCode: json['errorCode'] as num,
       errorMsg: json['errorMsg'] as String,
     );

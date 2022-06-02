@@ -23,4 +23,5 @@ class LoginAndRegisterHttp {
   static const String login = '/user/login';
   static const String regsiter = '/user/register';
   static const String exitLogin = '/user/logout/json';
+  static const String userCoin = "/lg/coin/userinfo/json";
 }

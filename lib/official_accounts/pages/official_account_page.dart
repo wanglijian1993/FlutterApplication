@@ -24,6 +24,7 @@ class _OfficialAccountPageState extends State<OfficialAccountPage>
   }
   @override
   Widget build(BuildContext context) {
+    print('official_account_articles_page build');
     return FutureBuilder(
       future: HttpClient.get(AffAccountHttp.OfficialAccount, null),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -41,8 +42,8 @@ class _OfficialAccountPageState extends State<OfficialAccountPage>
               isScrollable: true,
               tabs: officialAccountBean.data
                   .map((e) => Tab(
-                        text: e.name,
-                      ))
+                text: e.name,
+              ))
                   .toList(),
               controller: _tabController,
             ),

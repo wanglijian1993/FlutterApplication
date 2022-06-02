@@ -27,11 +27,13 @@ class _SquarePageState extends State<SquarePage> {
     // TODO: implement initState
     super.initState();
     _controller = EasyRefreshController();
+    print('square_articles_page initState');
     reqeustSquares(-1);
   }
 
   @override
   Widget build(BuildContext context) {
+    print('square_articles_page build');
     return EasyRefresh(
       child: ListView.separated(
         itemBuilder: (BuildContext context, int index) {

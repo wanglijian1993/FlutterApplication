@@ -40,7 +40,8 @@ class _HomeWidgetState extends State<HomeWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    reqeustHomeDatas();
+    print('HomeWidget initState');
+    reqeustHomeDatas(-1);
   }
 
   @override
@@ -51,6 +52,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print('home_articles_page build');
     return EasyRefresh.custom(
         slivers: [
           SliverAppBar(
@@ -71,14 +73,14 @@ class _HomeWidgetState extends State<HomeWidget> {
           index = 0;
           topArticles.clear();
           hotArticles.clear();
-          reqeustHomeDatas();
+          reqeustHomeDatas(0);
         },
         onLoad: () async {
           reqeustArticle();
         });
   }
 
-  void reqeustHomeDatas() async {
+  void reqeustHomeDatas(int type) async {
     Future.wait([
       HttpClient.get(HttpQueryParams.HotArticle, null),
       HttpClient.get('/article/list/${index}/json', null),
@@ -98,7 +100,9 @@ class _HomeWidgetState extends State<HomeWidget> {
         mBanners.addAll(banners.data);
       }
       setState(() {
-        _controller.finishRefresh(success: true);
+        if (type == 0) {
+          _controller.finishRefresh(success: true);
+        }
       });
     }).catchError((e) {
       print('error:${e}');

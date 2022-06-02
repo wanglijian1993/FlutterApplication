@@ -48,6 +48,11 @@ dependencies:
   fluttertoast: ^8.0.9
   #存储
   shared_preferences: ^2.0.15
+  #even bus
+  event_bus: ^2.0.0
+  #Cookie
+  dio_cookie_manager: ^2.0.0
+  cookie_jar: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

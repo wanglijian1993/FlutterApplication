@@ -29,6 +29,7 @@ class _SystemPageState extends State<SystemPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print('system_page build');
     return Scaffold(
       appBar: TabBar(
         controller: _tabController,

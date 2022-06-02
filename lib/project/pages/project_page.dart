@@ -103,6 +103,7 @@ class _ProjectArticlesState extends State<ProjectArticles> {
 
   @override
   Widget build(BuildContext context) {
+    print('project_page build');
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: EasyRefresh(
@@ -117,53 +118,53 @@ class _ProjectArticlesState extends State<ProjectArticles> {
                   ),
                   Expanded(
                       child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(article.title,
-                                style: const TextStyle(fontSize: 16),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                            const SizedBox(height: 10),
-                            Text(article.desc,
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.black54),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis),
-                            const SizedBox(height: 8),
-                            Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Text(article.title,
+                                    style: const TextStyle(fontSize: 16),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis),
+                                const SizedBox(height: 10),
+                                Text(article.desc,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black54),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis),
+                                const SizedBox(height: 8),
+                                Stack(
                                   children: [
-                                    Text(
-                                        "作者: ${article.author.length > 0 ? article.author : article.shareUser}"),
-                                    const SizedBox(
-                                      height: 6,
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "作者: ${article.author.length > 0 ? article.author : article.shareUser}"),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        Text("发布时间:${article.niceShareDate}"),
+                                      ],
                                     ),
-                                    Text("发布时间:${article.niceShareDate}"),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Icon(
+                                        CupertinoIcons.heart_circle,
+                                        size: 40,
+                                        color: Colors.red,
+                                      ),
+                                    )
                                   ],
                                 ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Icon(
-                                    CupertinoIcons.heart_circle,
-                                    size: 40,
-                                    color: Colors.red,
-                                  ),
-                                )
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ))
+                          ),
+                        ],
+                      ))
                 ],
               );
             },

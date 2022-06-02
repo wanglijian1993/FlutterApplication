@@ -1,12 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:my_appliciation/https/http_client.dart';
+import 'package:my_appliciation/login/bean/LoginBean.dart';
+import 'package:my_appliciation/login/bean/UserCoinBean.dart';
 import 'package:my_appliciation/project/pages/project_page.dart';
 import 'package:my_appliciation/square/pages/square_page.dart';
 import 'package:my_appliciation/system/pages/system_page.dart';
+import 'package:my_appliciation/utils/EventBusUtil.dart';
+import 'package:my_appliciation/utils/LoginSingleton.dart';
 import 'package:my_appliciation/widgets/MyTitle.dart';
 
 import 'home/pages/home_articles_page.dart';
+import 'https/http_qeury_params.dart';
 import 'login/pages/Login.dart';
 import 'official_accounts/pages/official_account_page.dart';
 
@@ -19,7 +27,6 @@ class MyApp extends StatelessWidget {
 
   @override
   StatelessElement createElement() {
-    // TODO: implement createElement
     return super.createElement();
   }
 
@@ -44,19 +51,19 @@ class HomeArticesPage extends StatefulWidget {
 }
 
 class _HomeArticesPage extends State<HomeArticesPage> {
-  var pages = [
-    HomeWidget(),
-    SquarePage(),
-    OfficialAccountPage(),
-    SystemPage(),
-    ProjectPage()
-  ];
+  var pages;
   late int _selectedIndex;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = 0;
+    var home = const HomeWidget();
+    var square = const SquarePage();
+    var officialAccount = const OfficialAccountPage();
+    var system = const SystemPage();
+    var project = const ProjectPage();
+    pages = [home, square, officialAccount, system, project];
   }
 
   void _onItemTapped(int index) {
@@ -69,7 +76,7 @@ class _HomeArticesPage extends State<HomeArticesPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('index:$_selectedIndex');
+    print('main build');
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(
@@ -127,6 +134,38 @@ class _MyDrawerState extends State<MyDrawer> {
     CupertinoIcons.moon_circle,
     CupertinoIcons.settings
   ];
+  String coinLevel = "--";
+  String coinRank = "--";
+  late StreamSubscription<LoginBean> _loginSubscription;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loginSubscription = EventBusUtil.listen<LoginBean>((event) {
+      requestCoin();
+    })!;
+    requestCoin();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void requestCoin() {
+    if (LoginSingleton().isLogin) {
+      HttpClient.get(LoginAndRegisterHttp.userCoin, null).then((value) {
+        UserCoinBean userCoinBean = UserCoinBean.fromJson(value.data);
+        if (userCoinBean.errorCode == 0) {
+          setState(() {
+            coinLevel = '${userCoinBean.data.level}';
+            coinRank = '${userCoinBean.data.rank}';
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +178,11 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             child: GestureDetector(
               onTap: () async {
-                Navigator.pop(context);
-                var result = await Navigator.push(context,
+                // Navigator.pop(context);
+                Navigator.push(context,
                     MaterialPageRoute(builder: (BuildContext context) {
                   return LoginPage();
                 }));
-                print('result${result}');
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -154,19 +192,19 @@ class _MyDrawerState extends State<MyDrawer> {
                     height: 10,
                   ),
                   Text(
-                    '未登录',
+                    '${LoginSingleton().isLogin ? LoginSingleton().login.data?.username : '未登录'}',
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('等级:--',
+                      Text('等级:${coinLevel}',
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                       SizedBox(
                         width: 8,
                       ),
-                      Text('排名:--',
+                      Text('排名:${coinRank}',
                           style: TextStyle(fontSize: 16, color: Colors.white))
                     ],
                   ),

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_appliciation/login/bean/LoginBean.dart';
 import 'package:my_appliciation/login/bean/RegisterBean.dart';
+import 'package:my_appliciation/utils/EventBusUtil.dart';
+import 'package:my_appliciation/utils/LoginSingleton.dart';
 import 'package:my_appliciation/utils/MyToast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,11 +35,17 @@ class _LoginPageState extends State<LoginPage> {
         'username': _account.text,
         'password': _pwd.text,
       }).then((value) {
+        print('login${value.toString()}');
         LoginBean login = LoginBean.fromJson(value);
         String msg = '登录成功!';
         if (login.errorCode == 0) {
+          //发送event事件
+          EventBusUtil.fire(login);
+          LoginSingleton().isLogin = true;
+          LoginSingleton().login = login;
           _prefs
-              .then((sp) => {sp.setString(Constants.loginInfo, value)})
+              .then(
+                  (sp) => {sp.setString(Constants.loginInfo, value.toString())})
               .whenComplete(() {
             Navigator.pop(context);
           });

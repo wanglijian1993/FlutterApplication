@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:my_appliciation/utils/EventBusUtil.dart';
 
 part 'LoginBean.g.dart';
 
 @JsonSerializable()
-class LoginBean {
-  DataBean data;
+class LoginBean extends Event {
+  DataBean? data;
   num errorCode;
   String errorMsg;
 
