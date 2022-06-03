@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
+import 'package:my_appliciation/webview/MyWebView.dart';
 
 import '../../https/http_qeury_params.dart';
 import '../../widgets/MyDividers.dart';
@@ -191,59 +192,67 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
         delegate: SliverChildBuilderDelegate(
       (BuildContext context, int index) {
         var article = widget.articles[index];
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text: widget.mType == 0 ? "HOT" : "TOP",
-                            style: TextStyle(color: Colors.red, fontSize: 12)),
-                        TextSpan(
-                          text: '  ${article.title}',
-                          style: TextStyle(color: Colors.black, fontSize: 17),
-                        )
-                      ])),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        "作者:${article.author.length > 0 ? article.author : article.shareUser}",
-                    maxLines: 2,
-                    style: TextStyle(color: Colors.black, fontSize: 15),
-                  ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              article.niceShareDate,
-                              style: TextStyle(fontSize: 15, color: Colors.grey),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return MyWebView(article.link);
+            }));
+          },
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(TextSpan(children: [
+                      TextSpan(
+                          text: widget.mType == 0 ? "HOT" : "TOP",
+                          style: TextStyle(color: Colors.red, fontSize: 12)),
+                      TextSpan(
+                        text: '  ${article.title}',
+                        style: TextStyle(color: Colors.black, fontSize: 17),
+                      )
+                    ])),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "作者:${article.author.length > 0 ? article.author : article.shareUser}",
+                      maxLines: 2,
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            article.niceShareDate,
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(
+                              CupertinoIcons.heart_solid,
+                              size: 20,
+                              color: Colors.red,
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(
-                                CupertinoIcons.heart_solid,
-                                size: 20,
-                                color: Colors.red,
-                              ),
-                            )
-                          ]),
-                    ],
+                          )
+                        ]),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 0.5,
-              child: divider,
-            )
-          ],
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 0.5,
+                child: divider,
+              )
+            ],
+          ),
         );
       },
       childCount: widget.articles.length,

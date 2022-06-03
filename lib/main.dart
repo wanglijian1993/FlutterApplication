@@ -51,27 +51,34 @@ class HomeArticesPage extends StatefulWidget {
 }
 
 class _HomeArticesPage extends State<HomeArticesPage> {
-  var pages;
-  late int _selectedIndex;
+  List<Widget>? pages;
+  late int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = 0;
-    var home = const HomeWidget();
-    var square = const SquarePage();
-    var officialAccount = const OfficialAccountPage();
-    var system = const SystemPage();
-    var project = const ProjectPage();
-    pages = [home, square, officialAccount, system, project];
+    print('main_init');
+    if (pages == null) {
+      print('pages==null');
+    }
+    pages ??= [
+      const HomeWidget(),
+      const SquarePage(),
+      const OfficialAccountPage(),
+      SystemPage(),
+      const ProjectPage()
+    ];
   }
 
-  void _onItemTapped(int index) {
-    if (index != _selectedIndex) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+  Widget _getPagesWidget(int index) {
+    return Offstage(
+      offstage: _selectedIndex != index,
+      child: TickerMode(
+        enabled: _selectedIndex == index,
+        child: pages![index],
+      ),
+    );
   }
 
   @override
@@ -84,13 +91,25 @@ class _HomeArticesPage extends State<HomeArticesPage> {
             _selectedIndex == 0 ? 0 : AppBar().preferredSize.height),
         child: MyAppBar("wanAndroid", _selectedIndex, titles: widget.titles),
       ),
-      body: pages[_selectedIndex],
+      body: Stack(
+        children: [
+          _getPagesWidget(0),
+          _getPagesWidget(1),
+          _getPagesWidget(2),
+          _getPagesWidget(3),
+          _getPagesWidget(4),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         showUnselectedLabels: true,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         items: [
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.home), label: widget.titles[0]),

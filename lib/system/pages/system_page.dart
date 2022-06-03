@@ -9,7 +9,7 @@ import '../../https/http_qeury_params.dart';
 import '../../widgets/MyDividers.dart';
 
 class SystemPage extends StatefulWidget {
-  const SystemPage({Key? key}) : super(key: key);
+   SystemPage({Key? key}) : super(key: key);
 
   @override
   State<SystemPage> createState() => _SystemPageState();
@@ -22,7 +22,6 @@ class _SystemPageState extends State<SystemPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initStateuz
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }

@@ -21,7 +21,9 @@ class _OfficialAccountPageState extends State<OfficialAccountPage>
   @override
   void initState() {
     super.initState();
+    print('official_account_articles_page initState');
   }
+
   @override
   Widget build(BuildContext context) {
     print('official_account_articles_page build');
