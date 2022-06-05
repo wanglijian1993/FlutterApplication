@@ -55,7 +55,8 @@ dependencies:
   cookie_jar: ^3.0.1
   #webview
   webview_flutter: ^3.0.4
-
+  #文件
+  path_provider: ^2.0.10
 dev_dependencies:
   flutter_test:
     sdk: flutter

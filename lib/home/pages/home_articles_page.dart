@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
+import 'package:my_appliciation/utils/CommonHttpRequest.dart';
 import 'package:my_appliciation/webview/MyWebView.dart';
 
 import '../../https/http_qeury_params.dart';
@@ -234,12 +235,17 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
                             article.niceShareDate,
                             style: TextStyle(fontSize: 15, color: Colors.grey),
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              CupertinoIcons.heart_solid,
-                              size: 20,
-                              color: Colors.red,
+                          GestureDetector(
+                            onTap: () {
+                              toCollectArticle(article.id);
+                            },
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                CupertinoIcons.heart,
+                                size: 20,
+                                color: Colors.black54,
+                              ),
                             ),
                           )
                         ]),

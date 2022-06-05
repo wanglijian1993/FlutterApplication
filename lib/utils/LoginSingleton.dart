@@ -14,5 +14,5 @@ class LoginSingleton {
   }
 
   bool isLogin = false;
-  late LoginBean login;
+  late DataBean login;
 }

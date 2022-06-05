@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
 
-class HttpClient{
+class HttpClient {
   ///超时时间
   static const int contentTime = 30000;
   static const int receiveTime = 30000;
@@ -14,7 +17,18 @@ class HttpClient{
   static final Dio dio = Dio(baseOptions);
 
   static init() {
-    dio.interceptors.add(CookieManager((CookieJar())));
+    var cookieJar = getCookieJar();
+    cookieJar.then((cookieJar) {
+      dio.interceptors.add(CookieManager(cookieJar));
+    });
+  }
+
+  static Future<PersistCookieJar> getCookieJar() async {
+    Directory tempDir = await getTemporaryDirectory();
+    var tempPath = tempDir.path;
+    var cj =
+        PersistCookieJar(ignoreExpires: true, storage: FileStorage(tempPath));
+    return cj;
   }
 
   /**
@@ -36,6 +50,4 @@ class HttpClient{
     Response respose= await dio.post(path,queryParameters: queryParameters);
     return respose.data;
   }
-
-
 }

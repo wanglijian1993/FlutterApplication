@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_appliciation/login/bean/LoginBean.dart';
@@ -40,15 +42,21 @@ class _LoginPageState extends State<LoginPage> {
         String msg = '登录成功!';
         if (login.errorCode == 0) {
           //发送event事件
-          EventBusUtil.fire(login);
-          LoginSingleton().isLogin = true;
-          LoginSingleton().login = login;
-          _prefs
-              .then(
-                  (sp) => {sp.setString(Constants.loginInfo, value.toString())})
-              .whenComplete(() {
-            Navigator.pop(context);
-          });
+          if (login.data != null) {
+            EventBusUtil.fire(login);
+            LoginSingleton().isLogin = true;
+            LoginSingleton().login = login.data!;
+            String userInfo = json.encode(login.data!);
+            _prefs
+                .then((sp) => {
+                      sp.setString(Constants.loginInfo, userInfo),
+                      sp.setString(Constants.loginAccount, _account.text),
+                      sp.setString(Constants.loginPwd, _pwd.text)
+                    })
+                .whenComplete(() {
+              Navigator.pop(context);
+            });
+          }
         } else {
           msg = login.errorMsg;
         }

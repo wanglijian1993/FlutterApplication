@@ -27,10 +27,10 @@ DataBean _$DataBeanFromJson(Map<String, dynamic> json) => DataBean(
       collectIds:
           (json['collectIds'] as List<dynamic>).map((e) => e as num).toList(),
       email: json['email'] as String,
-      icon: json['icon'] as String,
+      icon: json['icon'] as String?,
       id: json['id'] as num,
       nickname: json['nickname'] as String,
-      password: json['password'] as String,
+      password: json['password'] as String?,
       publicName: json['publicName'] as String,
       token: json['token'] as String,
       type: json['type'] as num,

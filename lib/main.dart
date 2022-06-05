@@ -1,17 +1,21 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:my_appliciation/home/pages/MyCoolectWdiget.dart';
 import 'package:my_appliciation/https/http_client.dart';
-import 'package:my_appliciation/login/bean/LoginBean.dart';
+import 'package:my_appliciation/login/bean/LoginBean.dart' as LoginBean;
 import 'package:my_appliciation/login/bean/UserCoinBean.dart';
 import 'package:my_appliciation/project/pages/project_page.dart';
 import 'package:my_appliciation/square/pages/square_page.dart';
 import 'package:my_appliciation/system/pages/system_page.dart';
+import 'package:my_appliciation/utils/Constants.dart';
 import 'package:my_appliciation/utils/EventBusUtil.dart';
 import 'package:my_appliciation/utils/LoginSingleton.dart';
 import 'package:my_appliciation/widgets/MyTitle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home/pages/home_articles_page.dart';
 import 'https/http_qeury_params.dart';
@@ -53,15 +57,14 @@ class HomeArticesPage extends StatefulWidget {
 class _HomeArticesPage extends State<HomeArticesPage> {
   List<Widget>? pages;
   late int _selectedIndex = 0;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     super.initState();
     _selectedIndex = 0;
-    print('main_init');
-    if (pages == null) {
-      print('pages==null');
-    }
+    HttpClient.init();
+    isLogin();
     pages ??= [
       const HomeWidget(),
       const SquarePage(),
@@ -69,6 +72,18 @@ class _HomeArticesPage extends State<HomeArticesPage> {
       SystemPage(),
       const ProjectPage()
     ];
+  }
+
+  void isLogin() {
+    _prefs.then((sp) {
+      String? loginInfo = sp.getString(Constants.loginInfo);
+      if (loginInfo != null) {
+        LoginBean.DataBean login =
+            LoginBean.DataBean.fromJson(json.decode(loginInfo));
+        LoginSingleton().isLogin = true;
+        LoginSingleton().login = login;
+      }
+    });
   }
 
   Widget _getPagesWidget(int index) {
@@ -83,7 +98,6 @@ class _HomeArticesPage extends State<HomeArticesPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('main build');
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(
@@ -155,13 +169,14 @@ class _MyDrawerState extends State<MyDrawer> {
   ];
   String coinLevel = "--";
   String coinRank = "--";
-  late StreamSubscription<LoginBean> _loginSubscription;
+  late StreamSubscription<LoginBean.LoginBean> _loginSubscription;
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loginSubscription = EventBusUtil.listen<LoginBean>((event) {
+    _loginSubscription = EventBusUtil.listen<LoginBean.LoginBean>((event) {
       requestCoin();
     })!;
     requestCoin();
@@ -172,18 +187,19 @@ class _MyDrawerState extends State<MyDrawer> {
     super.dispose();
   }
 
+  String? account = "";
+  String? pwd = "";
+
   void requestCoin() {
-    if (LoginSingleton().isLogin) {
-      HttpClient.get(LoginAndRegisterHttp.userCoin, null).then((value) {
-        UserCoinBean userCoinBean = UserCoinBean.fromJson(value.data);
-        if (userCoinBean.errorCode == 0) {
-          setState(() {
-            coinLevel = '${userCoinBean.data.level}';
-            coinRank = '${userCoinBean.data.rank}';
-          });
-        }
-      });
-    }
+    HttpClient.get(LoginAndRegisterHttp.userCoin, null).then((value) {
+      UserCoinBean userCoinBean = UserCoinBean.fromJson(value.data);
+      if (userCoinBean.errorCode == 0) {
+        setState(() {
+          coinLevel = '${userCoinBean.data.level}';
+          coinRank = '${userCoinBean.data.rank}';
+        });
+      }
+    });
   }
 
   @override
@@ -211,7 +227,9 @@ class _MyDrawerState extends State<MyDrawer> {
                     height: 10,
                   ),
                   Text(
-                    '${LoginSingleton().isLogin ? LoginSingleton().login.data?.username : '未登录'}',
+                    LoginSingleton().isLogin
+                        ? LoginSingleton().login.username
+                        : '未登录',
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   SizedBox(height: 8),
@@ -235,17 +253,27 @@ class _MyDrawerState extends State<MyDrawer> {
             padding: const EdgeInsets.only(left: 40.0, top: 20),
             child: ListView.separated(
               itemBuilder: (BuildContext context, int index) {
-                return Row(
-                  children: [
-                    Icon(mIconData[index]),
-                    SizedBox(
-                      width: 40,
-                    ),
-                    Text(
-                      mPortViewDatas[index],
-                      style: TextStyle(color: Colors.black, fontSize: 16),
-                    )
-                  ],
+                return GestureDetector(
+                  onTap: () {
+                    if (index == 1) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return MyCoolectWdigetPage();
+                      }));
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(mIconData[index]),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      Text(
+                        mPortViewDatas[index],
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      )
+                    ],
+                  ),
                 );
               },
               itemCount: mPortViewDatas.length,

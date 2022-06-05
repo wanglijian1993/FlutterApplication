@@ -25,10 +25,10 @@ class DataBean {
   num coinCount;
   List<num> collectIds;
   String email;
-  String icon;
+  String? icon;
   num id;
   String nickname;
-  String password;
+  String? password;
   String publicName;
   String token;
   num type;
@@ -40,10 +40,10 @@ class DataBean {
       required this.coinCount,
       required this.collectIds,
       required this.email,
-      required this.icon,
+      this.icon,
       required this.id,
       required this.nickname,
-      required this.password,
+      this.password,
       required this.publicName,
       required this.token,
       required this.type,
