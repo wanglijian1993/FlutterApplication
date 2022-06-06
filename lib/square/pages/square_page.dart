@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
+import '../../login/pages/Login.dart';
 import '../../utils/CommonHttpRequest.dart';
+import '../../utils/LoginSingleton.dart';
 import '../../widgets/MyDividers.dart';
 import '../bean/Squares.dart';
 
@@ -69,6 +71,12 @@ class _SquarePageState extends State<SquarePage> {
                     Text("分类:${square.superChapterName}/${square.chapterName}"),
                     GestureDetector(
                       onTap: () {
+                        if(!LoginSingleton().isLogin){
+                          Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+                            return LoginPage();
+                          }));
+                          return;
+                        }
                         if(square.collect){
                           toUnCollectArticle(square.id);
                         }else {

@@ -8,7 +8,9 @@ import 'package:my_appliciation/project/beans/ProjectTabs.dart';
 import 'package:my_appliciation/widgets/MyDividers.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../login/pages/Login.dart';
 import '../../utils/CommonHttpRequest.dart';
+import '../../utils/LoginSingleton.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({Key? key}) : super(key: key);
@@ -153,6 +155,12 @@ class _ProjectArticlesState extends State<ProjectArticles> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
+                                        if(!LoginSingleton().isLogin){
+                                          Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+                                            return LoginPage();
+                                          }));
+                                          return;
+                                        }
                                         if(article.collect){
                                           toUnCollectArticle(article.id);
                                         }else {

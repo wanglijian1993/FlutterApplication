@@ -9,6 +9,8 @@ import 'package:my_appliciation/utils/CommonHttpRequest.dart';
 import 'package:my_appliciation/webview/MyWebView.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../login/pages/Login.dart';
+import '../../utils/LoginSingleton.dart';
 import '../../widgets/MyDividers.dart';
 import '../../widgets/MyTitle.dart';
 import '../bean/BannersBean.dart' as Banner;
@@ -248,11 +250,13 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
                             },
                             child: GestureDetector(
                               onTap: () {
-                                if(article.collect){
-                                  toUnCollectArticle(article.id);
-                                }else {
-                                  toCollectArticle(article.id);
+                                if(!LoginSingleton().isLogin){
+                                  Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+                                    return LoginPage();
+                                  }));
+                                  return;
                                 }
+                                toCollectOperation(article.collect, article.id);
                                 setState(() {
                                   article.collect=!article.collect;
                                 });

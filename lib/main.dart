@@ -187,8 +187,9 @@ class _MyDrawerState extends State<MyDrawer> {
     super.dispose();
   }
 
-  String? account = "";
-  String? pwd = "";
+  String? account = '';
+  String? pwd = '';
+  String? integal='';
 
   void requestCoin() {
     HttpClient.get(LoginAndRegisterHttp.userCoin, null).then((value) {
@@ -197,6 +198,7 @@ class _MyDrawerState extends State<MyDrawer> {
         setState(() {
           coinLevel = '${userCoinBean.data.level}';
           coinRank = '${userCoinBean.data.rank}';
+          integal='${userCoinBean.data.coinCount}';
         });
       }
     });
@@ -204,86 +206,99 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                // Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return LoginPage();
-                }));
-              },
+    return GestureDetector(
+      onTap: (){
+        // Navigator.pop(context);
+        if(!LoginSingleton().isLogin){
+          Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+            return LoginPage();
+          }));
+          return;
+        }
+      },
+      child: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(child: Icon(CupertinoIcons.person)),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    LoginSingleton().isLogin
-                        ? LoginSingleton().login.username
-                        : '未登录',
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('等级:${coinLevel}',
-                          style: TextStyle(fontSize: 16, color: Colors.white)),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text('排名:${coinRank}',
-                          style: TextStyle(fontSize: 16, color: Colors.white))
-                    ],
-                  ),
-                ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(child: Icon(CupertinoIcons.person)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      LoginSingleton().isLogin
+                          ? LoginSingleton().login.username
+                          : '未登录',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('等级:${coinLevel}',
+                            style: TextStyle(fontSize: 16, color: Colors.white)),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text('排名:${coinRank}',
+                            style: TextStyle(fontSize: 16, color: Colors.white))
+                      ],
+                    ),
+                  ],
+                ),
+
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, top: 20),
+              child: ListView.separated(
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      if (index == 1) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return MyCoolectWdigetPage();
+                        }));
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Icon(mIconData[index]),
+                        SizedBox(
+                          width: 40,
+                        ),
+                        Text(
+                          mPortViewDatas[index],
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                        Visibility(
+                            visible: (index==0&&LoginSingleton().isLogin) ? true:false,
+                            child: Wrap(
+                                children: [
+                                  SizedBox(width: 20,),
+                                  Text(integal!,style: TextStyle(color: Colors.blue),)
+                                ],
+                                )
+                        )
+
+                      ],
+                    ),
+                  );
+                },
+                itemCount: mPortViewDatas.length,
+                separatorBuilder: (BuildContext context, int index) => SizedBox(
+                  height: 40,
+                ),
+                shrinkWrap: true,
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 40.0, top: 20),
-            child: ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    if (index == 1) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return MyCoolectWdigetPage();
-                      }));
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Icon(mIconData[index]),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      Text(
-                        mPortViewDatas[index],
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                      )
-                    ],
-                  ),
-                );
-              },
-              itemCount: mPortViewDatas.length,
-              separatorBuilder: (BuildContext context, int index) => SizedBox(
-                height: 40,
-              ),
-              shrinkWrap: true,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

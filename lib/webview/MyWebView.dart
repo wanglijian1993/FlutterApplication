@@ -29,7 +29,6 @@ class _MyWebViewState extends State<MyWebView> {
 
   @override
   Widget build(BuildContext context) {
-    print('---WebView build');
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -57,7 +56,6 @@ class _MyWebViewState extends State<MyWebView> {
         onProgress: (int progress) {
           setState(() {
             _lineProgress = progress * 0.01;
-            print('_lineProgress$_lineProgress');
           });
           print('WebView is loading (progress : $progress%)');
         },

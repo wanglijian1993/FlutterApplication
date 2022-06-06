@@ -5,7 +5,9 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../login/pages/Login.dart';
 import '../../utils/CommonHttpRequest.dart';
+import '../../utils/LoginSingleton.dart';
 import '../bean/OfficialAccountArticlesBean.dart';
 import '../bean/OfficialAccountTabBean.dart' as Aticles;
 
@@ -136,6 +138,12 @@ class _MyTabBarViewState extends State<MyTabBarView> {
                     ),
                     GestureDetector(
                       onTap: () {
+                        if(!LoginSingleton().isLogin){
+                          Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+                            return LoginPage();
+                          }));
+                          return;
+                        }
                         if(offAccountArticle.collect){
                           toUnCollectArticle(offAccountArticle.id);
                         }else {

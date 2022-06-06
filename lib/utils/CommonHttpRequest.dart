@@ -5,6 +5,13 @@ import 'package:my_appliciation/utils/MyToast.dart';
 
 import '../https/http_client.dart';
 
+void toCollectOperation(bool collect,num id){
+  if(collect){
+    toUnCollectArticle(id);
+  }else {
+    toCollectArticle(id);
+  }
+}
 
 /**
  * 收藏文章
