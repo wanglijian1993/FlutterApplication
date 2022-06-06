@@ -5,6 +5,7 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../utils/CommonHttpRequest.dart';
 import '../bean/OfficialAccountArticlesBean.dart';
 import '../bean/OfficialAccountTabBean.dart' as Aticles;
 
@@ -133,12 +134,24 @@ class _MyTabBarViewState extends State<MyTabBarView> {
                         Text('发布时间:${offAccountArticle.niceShareDate}')
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Icon(
-                        CupertinoIcons.heart_solid,
-                        size: 20,
-                        color: Colors.red,
+                    GestureDetector(
+                      onTap: () {
+                        if(offAccountArticle.collect){
+                          toUnCollectArticle(offAccountArticle.id);
+                        }else {
+                          toCollectArticle(offAccountArticle.id);
+                        }
+                        setState(() {
+                          offAccountArticle.collect=!offAccountArticle.collect;
+                        });
+                      },
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Icon(
+                          CupertinoIcons.heart_solid,
+                          size: 20,
+                          color:offAccountArticle.collect?Colors.red : Colors.black54,
+                        ),
                       ),
                     )
                   ],

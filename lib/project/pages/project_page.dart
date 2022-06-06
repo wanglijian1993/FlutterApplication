@@ -8,6 +8,7 @@ import 'package:my_appliciation/project/beans/ProjectTabs.dart';
 import 'package:my_appliciation/widgets/MyDividers.dart';
 
 import '../../https/http_qeury_params.dart';
+import '../../utils/CommonHttpRequest.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({Key? key}) : super(key: key);
@@ -150,12 +151,24 @@ class _ProjectArticlesState extends State<ProjectArticles> {
                                         Text("发布时间:${article.niceShareDate}"),
                                       ],
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Icon(
-                                        CupertinoIcons.heart_circle,
-                                        size: 40,
-                                        color: Colors.red,
+                                    GestureDetector(
+                                      onTap: () {
+                                        if(article.collect){
+                                          toUnCollectArticle(article.id);
+                                        }else {
+                                          toCollectArticle(article.id);
+                                        }
+                                        setState(() {
+                                          article.collect=!article.collect;
+                                        });
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Icon(
+                                          CupertinoIcons.heart_circle,
+                                          size: 40,
+                                          color:article.collect?Colors.red : Colors.black54,
+                                        ),
                                       ),
                                     )
                                   ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:my_appliciation/https/http_client.dart';
 
+import '../../utils/CommonHttpRequest.dart';
 import '../../widgets/MyDividers.dart';
 import '../bean/Squares.dart';
 
@@ -66,10 +67,22 @@ class _SquarePageState extends State<SquarePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("分类:${square.superChapterName}/${square.chapterName}"),
-                    Icon(
-                      CupertinoIcons.heart_solid,
-                      size: 20,
-                      color: Colors.red,
+                    GestureDetector(
+                      onTap: () {
+                        if(square.collect){
+                          toUnCollectArticle(square.id);
+                        }else {
+                          toCollectArticle(square.id);
+                        }
+                        setState(() {
+                          square.collect=!square.collect;
+                        });
+                      },
+                      child: Icon(
+                        CupertinoIcons.heart_solid,
+                        size: 20,
+                        color: square.collect?Colors.red : Colors.black54,
+                      ),
                     )
                   ],
                 ),

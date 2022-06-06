@@ -237,14 +237,33 @@ class _HomeArticlesWidget extends State<HomeArticlesWidget> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              toCollectArticle(article.id);
+                              if(article.collect){
+                                 toUnCollectArticle(article.id);
+                              }else {
+                                toCollectArticle(article.id);
+                              }
+                              setState(() {
+                                article.collect=!article.collect;
+                              });
                             },
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(
-                                CupertinoIcons.heart,
-                                size: 20,
-                                color: Colors.black54,
+                            child: GestureDetector(
+                              onTap: () {
+                                if(article.collect){
+                                  toUnCollectArticle(article.id);
+                                }else {
+                                  toCollectArticle(article.id);
+                                }
+                                setState(() {
+                                  article.collect=!article.collect;
+                                });
+                              },
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(
+                                  CupertinoIcons.heart_fill,
+                                  size: 20,
+                                  color: article.collect?Colors.red : Colors.black54,
+                                ),
                               ),
                             ),
                           )
