@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
         'username': _account.text,
         'password': _pwd.text,
       }).then((value) {
-        print('login${value.toString()}');
         LoginBean login = LoginBean.fromJson(value);
         String msg = '登录成功!';
         if (login.errorCode == 0) {
@@ -68,7 +67,6 @@ class _LoginPageState extends State<LoginPage> {
         'password': _pwd.text,
         'repassword': _repwd.text
       }).then((value) {
-        print('注册${value}end');
         RegisterBean registerBean = RegisterBean.fromJson(value);
         if (registerBean.errorCode == 0) {
           toast('注册成功，请登录');

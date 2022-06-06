@@ -4,6 +4,9 @@ class HttpQueryParams {
 
   //热门文章
   static const String HotArticle = "/article/top/json";
+
+  //热词
+  static const String HotWord='/hotkey/json';
 }
 
 class AffAccountHttp {

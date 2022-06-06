@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../home/pages/SeachArtcilePage.dart';
+
 class MyAppBar extends StatefulWidget {
   String title = "";
   int selectedIndex;
@@ -37,10 +39,18 @@ class _MyAppBarState extends State<MyAppBar> {
         style: const TextStyle(color: Colors.white, fontSize: 20),
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15.0),
-          child: Icon(CupertinoIcons.search),
+        GestureDetector(
+          onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+                return SeachArticlePage();
+              }));
+           },
+          child:Padding(
+            padding: const EdgeInsets.only(right: 15.0),
+            child: Icon(CupertinoIcons.search),
+          ),
         )
+
       ],
       elevation: 0,
     );

@@ -57,6 +57,8 @@ dependencies:
   webview_flutter: ^3.0.4
   #文件
   path_provider: ^2.0.10
+  #数据库
+  sqflite: ^2.0.2+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
