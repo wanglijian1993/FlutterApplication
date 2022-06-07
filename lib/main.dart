@@ -14,9 +14,11 @@ import 'package:my_appliciation/system/pages/system_page.dart';
 import 'package:my_appliciation/utils/Constants.dart';
 import 'package:my_appliciation/utils/EventBusUtil.dart';
 import 'package:my_appliciation/utils/LoginSingleton.dart';
+import 'package:my_appliciation/utils/MyToast.dart';
 import 'package:my_appliciation/widgets/MyTitle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'events/LoginEvent.dart';
 import 'home/pages/home_articles_page.dart';
 import 'https/http_qeury_params.dart';
 import 'login/pages/Login.dart';
@@ -151,21 +153,15 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  List<String> mPortViewDatas = [
-    '我的积分',
-    '我的收藏',
-    '我的分享',
-    'TODO',
-    '夜间模式',
-    '系统设置'
-  ];
+  List<String> mPortViewDatas = [];
   List<IconData> mIconData = [
     CupertinoIcons.squares_below_rectangle,
     CupertinoIcons.heart_circle,
     CupertinoIcons.share,
     CupertinoIcons.today,
     CupertinoIcons.moon_circle,
-    CupertinoIcons.settings
+    CupertinoIcons.settings,
+    CupertinoIcons.selection_pin_in_out
   ];
   String coinLevel = "--";
   String coinRank = "--";
@@ -174,8 +170,18 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    mPortViewDatas = [
+      '我的积分',
+      '我的收藏',
+      '我的分享',
+      'TODO',
+      '夜间模式',
+      '系统设置',
+    ];
+    if (LoginSingleton().isLogin) {
+      mPortViewDatas.add('退出登录');
+    }
     _loginSubscription = EventBusUtil.listen<LoginBean.LoginBean>((event) {
       requestCoin();
     })!;
@@ -198,19 +204,36 @@ class _MyDrawerState extends State<MyDrawer> {
         setState(() {
           coinLevel = '${userCoinBean.data.level}';
           coinRank = '${userCoinBean.data.rank}';
-          integal='${userCoinBean.data.coinCount}';
+          integal = '${userCoinBean.data.coinCount}';
         });
       }
+    });
+  }
+
+  void exitAccount() {
+    _prefs
+      ..then((sp) {
+        sp.clear();
+      });
+    HttpClient.get(LoginAndRegisterHttp.exitAccount, null).then((value) {
+      setState(() {
+        LoginSingleton().exitAccount();
+        EventBusUtil.fire(LoginEvent(false));
+        coinLevel = '--';
+        integal = '--';
+        toast('退出成功');
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         // Navigator.pop(context);
-        if(!LoginSingleton().isLogin){
-          Navigator.push(context,MaterialPageRoute(builder: (BuildContext context){
+        if (!LoginSingleton().isLogin) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
             return LoginPage();
           }));
           return;
@@ -264,6 +287,9 @@ class _MyDrawerState extends State<MyDrawer> {
                             MaterialPageRoute(builder: (BuildContext context) {
                           return MyCoolectWdigetPage();
                         }));
+                      } else if (mPortViewDatas[index] == '退出登录') {
+                        print('退出登录');
+                        exitAccount();
                       }
                     },
                     child: Row(
