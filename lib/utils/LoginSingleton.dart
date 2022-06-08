@@ -15,4 +15,8 @@ class LoginSingleton {
 
   bool isLogin = false;
   late DataBean login;
+
+  void exitAccount() {
+    isLogin = false;
+  }
 }

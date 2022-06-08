@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_appliciation/events/LoginEvent.dart';
 import 'package:my_appliciation/login/bean/LoginBean.dart';
 import 'package:my_appliciation/login/bean/RegisterBean.dart';
 import 'package:my_appliciation/utils/EventBusUtil.dart';
@@ -42,9 +43,9 @@ class _LoginPageState extends State<LoginPage> {
         if (login.errorCode == 0) {
           //发送event事件
           if (login.data != null) {
-            EventBusUtil.fire(login);
             LoginSingleton().isLogin = true;
             LoginSingleton().login = login.data!;
+            EventBusUtil.fire(LoginEvent(true));
             String userInfo = json.encode(login.data!);
             _prefs
                 .then((sp) => {
