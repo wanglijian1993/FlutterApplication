@@ -5,3 +5,4 @@ class LoginEvent extends Event {
 
   LoginEvent(this.isLogin);
 }
+

@@ -24,12 +24,10 @@ class _OfficialAccountPageState extends State<OfficialAccountPage>
   @override
   void initState() {
     super.initState();
-    print('official_account_articles_page initState');
   }
 
   @override
   Widget build(BuildContext context) {
-    print('official_account_articles_page build');
     return FutureBuilder(
       future: HttpClient.get(AffAccountHttp.OfficialAccount, null),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -88,7 +86,6 @@ class _MyTabBarViewState extends State<MyTabBarView> {
   }
 
   void requestOfficialAccountArticles(num id, int type) {
-    print('content$id,type$type');
     HttpClient.get('/wxarticle/list/$id/$index/json', null).then((value) {
       Response response = value;
       OfficialAccountArticlesBean offAccountArticles =

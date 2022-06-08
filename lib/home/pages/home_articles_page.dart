@@ -44,7 +44,6 @@ class _HomeWidgetState extends State<HomeWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('HomeWidget initState');
     reqeustHomeDatas(-1);
   }
 
@@ -56,7 +55,6 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('home_articles_page build');
     return EasyRefresh.custom(
         slivers: [
           SliverAppBar(

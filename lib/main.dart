@@ -74,6 +74,10 @@ class _HomeArticesPage extends State<HomeArticesPage> {
       SystemPage(),
       const ProjectPage()
     ];
+    EventBusUtil.listen<LoginEvent>((event) {
+      setState(() {
+      });
+    })!;
   }
 
   void isLogin() {
@@ -165,7 +169,7 @@ class _MyDrawerState extends State<MyDrawer> {
   ];
   String coinLevel = "--";
   String coinRank = "--";
-  late StreamSubscription<LoginBean.LoginBean> _loginSubscription;
+  String? integal='';
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
@@ -182,9 +186,7 @@ class _MyDrawerState extends State<MyDrawer> {
     if (LoginSingleton().isLogin) {
       mPortViewDatas.add('退出登录');
     }
-    _loginSubscription = EventBusUtil.listen<LoginBean.LoginBean>((event) {
-      requestCoin();
-    })!;
+
     requestCoin();
   }
 
@@ -193,9 +195,6 @@ class _MyDrawerState extends State<MyDrawer> {
     super.dispose();
   }
 
-  String? account = '';
-  String? pwd = '';
-  String? integal='';
 
   void requestCoin() {
     HttpClient.get(LoginAndRegisterHttp.userCoin, null).then((value) {
@@ -221,6 +220,7 @@ class _MyDrawerState extends State<MyDrawer> {
         EventBusUtil.fire(LoginEvent(false));
         coinLevel = '--';
         integal = '--';
+        coinRank='--';
         toast('退出成功');
       });
     });
